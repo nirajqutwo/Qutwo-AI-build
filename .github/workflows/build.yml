@@ -17,10 +17,12 @@ jobs:
             os: macos-15
             arch: arm64
             bin: qutwo-ai
+            cargo_flags: --no-default-features --features code-mode,tree-sitter,aws-providers,telemetry,otel,rustls-tls,live-voice,update,bundled-mcp,scheduler,platform-apps,chat-recall,acp-http,online-model-meta
           - name: mac-x64
             os: macos-15-intel
             arch: x64
             bin: qutwo-ai
+            cargo_flags: --no-default-features --features code-mode,tree-sitter,aws-providers,telemetry,otel,rustls-tls,live-voice,update,bundled-mcp,scheduler,platform-apps,chat-recall,acp-http,online-model-meta
           - name: win-x64
             os: windows-latest
             arch: x64
@@ -31,6 +33,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: "1.99.0"
+          components: rustfmt
 
       - uses: actions/setup-node@v4
         with:
@@ -41,7 +44,7 @@ jobs:
           version: 10
 
       - name: Build backend
-        run: cargo build --release -p qutwo-ai-cli
+        run: cargo build --release -p qutwo-ai-cli ${{ matrix.cargo_flags }}
 
       - name: Place backend
         shell: bash
