@@ -1,0 +1,6 @@
+# The ACP endpoint binds 0.0.0.0, so it requires a secret key; a random one is
+# generated and printed per launch unless QUTWO_AI_SERVER__SECRET_KEY is set.
+run:
+  - name: ACP Server
+    command: 'export QUTWO_AI_SERVER__SECRET_KEY="${QUTWO_AI_SERVER__SECRET_KEY:-$(openssl rand -hex 32)}"; echo "ACP secret key: $QUTWO_AI_SERVER__SECRET_KEY"; exec qutwo-ai serve --platform desktop --host 0.0.0.0 --port 3284'
+    port: 3284

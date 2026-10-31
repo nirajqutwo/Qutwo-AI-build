@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Qutwo-AI
+Exec=/usr/lib/qutwo-ai/Qutwo-AI %U
+Icon=/usr/share/pixmaps/qutwo-ai.png
+Terminal=false
+Type=Application
+Categories=Development;
+MimeType=x-scheme-handler/qutwo-ai;

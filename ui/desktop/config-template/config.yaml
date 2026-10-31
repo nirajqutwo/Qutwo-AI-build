@@ -1,0 +1,8 @@
+providers:
+  qutwo_gateway:
+    enabled: true
+    model: Socrates
+    configured: true
+QUTWO_AI_TELEMETRY_ENABLED: false
+QUTWO_AI_THINKING_EFFORT: max
+active_provider: qutwo_gateway

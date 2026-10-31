@@ -1,0 +1,28 @@
+{
+  "name": "@aaif/qutwo-ai-binary-darwin-x64",
+  "version": "1.57.0",
+  "description": "Qutwo-AI binary for macOS x64",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaif-qutwo-ai/qutwo-ai.git"
+  },
+  "keywords": [
+    "qutwo-ai",
+    "ai",
+    "agent",
+    "binary"
+  ],
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "bin": {
+    "qutwo-ai-binary-darwin-x64": "./bin/qutwo-ai"
+  },
+  "files": [
+    "bin/qutwo-ai"
+  ]
+}

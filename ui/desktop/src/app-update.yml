@@ -1,0 +1,6 @@
+provider: github
+owner: aaif-qutwo-ai
+repo: qutwo-ai
+updaterCacheDirName: qutwo-ai-updater
+publisherName:
+  - 'CN="LF Open Source, LLC", O="LF Open Source, LLC", L=Laguna Beach, S=California, C=US'
