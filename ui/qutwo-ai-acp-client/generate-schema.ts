@@ -141,9 +141,12 @@ function methodToCamelCase(method: string): string {
   let methodParts = method.split(/[/_]/).filter((part) => part.length > 0);
 
   let suffix: string;
-  if (methodParts[0] == "qutwo-ai" && methodParts[1] == "unstable") {
-    methodParts.shift();
-    methodParts.shift();
+  if (
+    methodParts[0] == "qutwo" &&
+    methodParts[1] == "ai" &&
+    methodParts[2] == "unstable"
+  ) {
+    methodParts.splice(0, 3);
     suffix = "_unstable";
   } else {
     suffix = "";

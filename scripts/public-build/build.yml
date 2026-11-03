@@ -1,0 +1,87 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: mac-arm64
+            os: macos-15
+            arch: arm64
+            bin: qutwo-ai
+            cargo_flags: --no-default-features --features code-mode,tree-sitter,aws-providers,telemetry,otel,rustls-tls,live-voice,update,bundled-mcp,scheduler,platform-apps,chat-recall,acp-http,online-model-meta
+          - name: mac-x64
+            os: macos-15-intel
+            arch: x64
+            bin: qutwo-ai
+            cargo_flags: --no-default-features --features code-mode,tree-sitter,aws-providers,telemetry,otel,rustls-tls,live-voice,update,bundled-mcp,scheduler,platform-apps,chat-recall,acp-http,online-model-meta
+          - name: win-x64
+            os: windows-latest
+            arch: x64
+            bin: qutwo-ai.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99.0"
+          components: rustfmt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Build backend
+        run: cargo build --release -p qutwo-ai-cli ${{ matrix.cargo_flags }}
+
+      - name: Place backend
+        shell: bash
+        run: |
+          mkdir -p ui/desktop/src/bin
+          cp target/release/${{ matrix.bin }} ui/desktop/src/bin/${{ matrix.bin }}
+
+      - name: Install UI dependencies
+        working-directory: ui
+        run: pnpm install --frozen-lockfile
+
+      - name: Package app
+        working-directory: ui/desktop
+        shell: bash
+        env:
+          ELECTRON_ARCH: ${{ matrix.arch }}
+        run: pnpm run package -- --arch=${{ matrix.arch }}
+
+      - name: Ad-hoc sign (macOS)
+        if: runner.os == 'macOS'
+        working-directory: ui/desktop/out
+        run: |
+          for app in */Qutwo-AI.app; do codesign --force --deep -s - "$app"; done
+
+      - name: Zip
+        working-directory: ui/desktop/out
+        shell: bash
+        run: |
+          d=$(ls -d Qutwo-AI-*)
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            ditto -c -k --sequesterRsrc "$d" "../../../Qutwo-AI-${{ matrix.name }}.zip"
+          else
+            7z a -tzip "../../../Qutwo-AI-${{ matrix.name }}.zip" "./$d/*" > /dev/null
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Qutwo-AI-${{ matrix.name }}
+          path: Qutwo-AI-${{ matrix.name }}.zip
+          retention-days: 14
